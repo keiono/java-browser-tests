@@ -1,11 +1,22 @@
 package org.cytoscape.fx.internal.ui;
 
-import com.sun.javafx.application.PlatformImpl;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import org.cytoscape.application.swing.CytoPanelComponent;
+import org.cytoscape.application.swing.CytoPanelName;
+
+import com.sun.javafx.application.PlatformImpl;
+
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
@@ -16,22 +27,16 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import org.cytoscape.application.swing.CytoPanelComponent;
-import org.cytoscape.application.swing.CytoPanelName;
-
 public class FXBrowserPanel extends JPanel implements CytoPanelComponent {
 
 	private Stage stage;
 	private WebView browser;
 	private JFXPanel jfxPanel;
-	private JButton swingButton;
 	private WebEngine webEngine;
+	
+	private String url;
+	private JTextField urlText;
+	private JButton loadButton;
 
 	public FXBrowserPanel() {
 		initComponents();
@@ -39,14 +44,16 @@ public class FXBrowserPanel extends JPanel implements CytoPanelComponent {
 
 	private void initComponents() {
 
+		this.setPreferredSize(new Dimension(800, 700));
+
 		jfxPanel = new JFXPanel();
+
 		createScene();
 
 		setLayout(new BorderLayout());
-		add(jfxPanel, BorderLayout.CENTER);
 
-		swingButton = new JButton();
-		swingButton.addActionListener(new ActionListener() {
+		loadButton = new JButton();
+		loadButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -54,34 +61,49 @@ public class FXBrowserPanel extends JPanel implements CytoPanelComponent {
 
 					@Override
 					public void run() {
-						webEngine.reload();
+						String newUrl = urlText.getText();
+						webEngine.load(newUrl);
 					}
 				});
 			}
 		});
-		swingButton.setText("Reload");
+		loadButton.setText("load");
 
-		add(swingButton, BorderLayout.SOUTH);
+		this.setSize(800, 800);
+		this.setPreferredSize(new Dimension(800, 800));
+		add(jfxPanel, BorderLayout.CENTER);
+
+		JPanel urlPanel = new JPanel();
+		// URL text area
+		this.urlText = new JTextField();
+		urlPanel.setLayout(new BorderLayout());
+		urlPanel.add(urlText, BorderLayout.CENTER);
+		urlPanel.add(loadButton, BorderLayout.EAST);
+
+		this.add(urlPanel, BorderLayout.NORTH);
+
 	}
 
 	private void createScene() {
+
 		PlatformImpl.startup(new Runnable() {
+
 			@Override
 			public void run() {
 
 				stage = new Stage();
 
-				stage.setTitle("Hello Java FX");
+				stage.setTitle("FX Browser");
 				stage.setResizable(true);
 
-				Group root = new Group();
-				Scene scene = new Scene(root, 80, 20);
+				final Group root = new Group();
+				Scene scene = new Scene(root, 800, 700);
 				stage.setScene(scene);
 
 				// Set up the embedded browser:
 				browser = new WebView();
 				webEngine = browser.getEngine();
-				webEngine.load("http://deep-cell.ucsd.edu/");
+				webEngine.load("https://html5test.com/");
 
 				ObservableList<Node> children = root.getChildren();
 				children.add(browser);
@@ -90,7 +112,7 @@ public class FXBrowserPanel extends JPanel implements CytoPanelComponent {
 			}
 		});
 	}
-	
+
 	@Override
 	public Component getComponent() {
 		return this;

@@ -43,6 +43,7 @@ public class CyActivator extends AbstractCyActivator {
 		showMessageTaskFactoryProps.setProperty(MENU_GRAVITY, "1.0");
 		registerService(bc, showMessageTaskFactory, TaskFactory.class, showMessageTaskFactoryProps);
 
+		// Call in separate thread
 		final JXBrowserPanel panel = new JXBrowserPanel();
 		registerService(bc, panel, CytoPanelComponent.class, new Properties());
 		

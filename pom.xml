@@ -214,6 +214,11 @@
 			<artifactId>jxbrowser-mac</artifactId>
 			<version>6.13</version>
 		</dependency>
+		<dependency>
+			<groupId>com.teamdev.jxbrowser</groupId>
+			<artifactId>jxbrowser-win</artifactId>
+			<version>6.13</version>
+		</dependency>
 
 		<!-- Testing -->
 		<dependency>

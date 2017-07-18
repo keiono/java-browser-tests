@@ -28,7 +28,11 @@ public class JXBrowserPanel extends JPanel implements CytoPanelComponent {
 	
 	public JXBrowserPanel() {
 		
+		final long start = System.currentTimeMillis();
+		System.out.println("Initializing browser component...");
 		this.browser = new Browser();
+		System.out.println("Ready in: " + (System.currentTimeMillis() - start) );
+        final BrowserView view = new BrowserView(browser);
 		
 		// URL text area
 		this.urlText = new JTextField();
@@ -41,14 +45,15 @@ public class JXBrowserPanel extends JPanel implements CytoPanelComponent {
 				browser.loadURL(text);
 			}
 		});
-		
-        BrowserView view = new BrowserView(browser);
+	
 
+		final Dimension size = new Dimension(800, 700);
+		
         this.setLayout(new BorderLayout());
-        this.setSize(800, 800);
+        this.setSize(size);
+        this.setMinimumSize(size);
+        this.setPreferredSize(size);
         
-        this.setPreferredSize(new Dimension(800, 800));
-        browser.setSize(800, 800);
         this.add(view, BorderLayout.CENTER);
         
         JPanel urlPanel = new JPanel();
